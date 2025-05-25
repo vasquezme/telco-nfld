@@ -65,7 +65,7 @@
             attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
         }).addTo(map);
 
-        fetch('https://raw.githubusercontent.com/vasquezme/leaflet-map/refs/heads/main/city_of_toronto_poi.csv')
+        fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/blob/main/towers2.gpkg')
             .then(response => response.text())
             .then(data => {
                 const rows = data.split("\n").slice(1); // Skip header
@@ -79,7 +79,7 @@
                 });
             })
             .catch(error => console.error('Error fetching the CSV:', error));
-
+     
         fetch('https://raw.githubusercontent.com/vasquezme/leaflet-map/refs/heads/main/city_of_toronto_line.csv')
             .then(response => response.text())
             .then(data => {

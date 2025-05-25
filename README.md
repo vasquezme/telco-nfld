@@ -2,6 +2,8 @@
 
 telco-nfld
 
+https://vasquezme.github.io/telco-nfld/
+
 projection_crs:
 ESRI:102388
 NAD_1983_2011_UTM_Zone_19N

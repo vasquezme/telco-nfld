@@ -46,7 +46,7 @@
 <body>
 
     <!-- Display the map and title with HTML division tags  -->
-    <div id="map-title">Teleco. Demo.: East Coast Sample</div>
+    <div id="map-title">East Coast Telco. Sample</div>
     <div id="map"></div>
 
     <!-- Create the interactive map content with JavaScript (.js) -->
@@ -70,9 +70,9 @@
             .then(data => {
                 const rows = data.split("\n").slice(1); // Skip header
                 rows.forEach(row => {
-                    const [name, longitude, latitude] = row.split(",");
-                    if (longitude && latitude) {
-                        L.marker([parseFloat(longitude), parseFloat(latitude)])
+                    const [fid, id, latitude, longitude] = row.split(",");
+                    if (latitude && longitude) {
+                        L.marker([parseFloat(latitude), parseFloat(longitude)])
                             .addTo(map)
                             .bindPopup(name);
                     }

@@ -70,9 +70,9 @@
             .then(data => {
                 const rows = data.split("\n").slice(1); // Skip header
                 rows.forEach(row => {
-                    const [name, latitude, longitude] = row.split(",");
-                    if (latitude && longitude) {
-                        L.marker([parseFloat(latitude), parseFloat(longitude)])
+                    const [name, longitude, latitude] = row.split(",");
+                    if (longitude && latitude) {
+                        L.marker([parseFloat(longitude), parseFloat(latitude)])
                             .addTo(map)
                             .bindPopup(name);
                     }

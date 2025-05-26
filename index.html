@@ -66,18 +66,25 @@
         }).addTo(map);
 
         fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/nfld-admin-areas.geojson') // Replace with actual file URL
-            .then(response => response.json()) // Parse the GeoJSON file
+            .then(response => response.json()) // Parse the JSON file
             .then(data => {
-                data.features.forEach(feature => {
-                    // Extract properties
-                    const regionName = feature.properties.REGNAME || "Unknown Region";
-                    const geoId = feature.properties.GEOID || "No GEOID Available";
-                    const id = feature.properties.ID || "No ID";
+                L.geoJSON(data, {
+                    style: function (feature) {
+                        return { color: "blue", weight: 2 }; // Set polygon color & style
+                    },
+                    onEachFeature: function (feature, layer) {
+                        // Extract properties
+                        const regionName = feature.properties.REGNAME || "Unknown Region";
+                        const geoId = feature.properties.GEOID || "No GEOID Available";
+                        const id = feature.properties.ID || "No ID";
         
-                    console.log(`Region: ${regionName}, GEOID: ${geoId}, ID: ${id}`);
-                });
+                        // Bind popup with details
+                        layer.bindPopup(`<strong>Region:</strong> ${regionName}<br><strong>GEOID:</strong> ${geoId}<br><strong>ID:</strong> ${id}`);
+                    }
+                }).addTo(map);
             })
-            .catch(error => console.error('Error fetching the GeoJSON:', error));
+            .catch(error => console.error('Error fetching GeoJSON:', error));
+    
         
       fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/towers.geojson') // Replace with actual file URL or local path
         .then(response => response.json()) // Parse the GeoJSON file

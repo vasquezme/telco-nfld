@@ -65,23 +65,23 @@
             attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
         }).addTo(map);
 
-    fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/nfld-admin-areas.geojson')
-    .then(response => response.json()) // Parse as JSON
-    .then(data => {
-        data.features.forEach(feature => {
-            const coordinates = feature.geometry.coordinates;
-            const latitude = coordinates[1]; // GeoJSON format: [longitude, latitude]
-            const longitude = coordinates[0];
-            const name = feature.properties.name || "Unknown"; // Use feature name if available
-
-            if (latitude && longitude) {
-                L.marker([latitude, longitude])
-                    .addTo(map)
-                    .bindPopup(name);
-            }
-        });
-    })
-    .catch(error => console.error('Error fetching the GeoJSON:', error));
+        fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/nfld-admin-areas.geojson')
+        .then(response => response.json()) // Parse as JSON
+        .then(data => {
+            data.features.forEach(feature => {
+                const coordinates = feature.geometry.coordinates;
+                const latitude = coordinates[1]; // GeoJSON format: [longitude, latitude]
+                const longitude = coordinates[0];
+                const name = feature.properties.name || "Unknown"; // Use feature name if available
+    
+                if (latitude && longitude) {
+                    L.marker([latitude, longitude])
+                        .addTo(map)
+                        .bindPopup(name);
+                }
+            });
+        })
+        .catch(error => console.error('Error fetching the GeoJSON:', error));
         
         fetch('https://raw.githubusercontent.com/vasquezme/leaflet-map/refs/heads/main/city_of_toronto_line.csv')
             .then(response => response.text())

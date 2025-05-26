@@ -46,7 +46,7 @@
 <body>
 
     <!-- Display the map and title with HTML division tags  -->
-    <div id="map-title">East Coast Telco. Samples</div>
+    <div id="map-title">East Coast Telco. Sample</div>
     <div id="map"></div>
 
     <!-- Create the interactive map content with JavaScript (.js) -->
@@ -83,39 +83,24 @@
         })
         .catch(error => console.error('Error fetching the GeoJSON:', error));
 
-        fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/towers.geojson')
-        .then(response => response.json()) // Parse as JSON
+      fetch('raw.githubusercontent.com/vasquezme/telco-nfld/main/towers.geojson') // Replace with actual file URL or local path
+        .then(response => response.json()) // Parse the GeoJSON file
         .then(data => {
             data.features.forEach(feature => {
-                const coordinates = feature.geometry.coordinates;
-                const latitude = coordinates[1]; // GeoJSON format: [longitude, latitude]
-                const longitude = coordinates[0];
-                const name = feature.properties.name || "Unknown"; // Use feature name if available
+                // Extract coordinates from GeoJSON structure
+                const longitude = feature.properties.x; // Assuming 'x' is longitude
+                const latitude = feature.properties.y; // Assuming 'y' is latitude
+                const towerId = feature.properties.id || "Unknown Tower"; // Extract 'id'
     
                 if (latitude && longitude) {
-                    L.marker([latitude, longitude])
+                    L.marker([latitude, longitude]) // Add marker to Leaflet map
                         .addTo(map)
-                        .bindPopup(name);
+                        .bindPopup(`Tower ID: ${towerId}`);
                 }
             });
         })
-        .catch(error => console.error('Error fetching the GeoJSON:', error));
+        .catch(error => console.error('Error fetching the GeoJSON:', error));  
 
-        fetch('https://raw.githubusercontent.com/vasquezme/leaflet-map/refs/heads/main/city_of_toronto_line.csv')
-            .then(response => response.text())
-            .then(data => {
-                const rows = data.split("\n").slice(1); // Skip header
-                const coordinates = rows.map(row => {
-                    const [name, latitude, longitude] = row.split(",");
-                    return latitude && longitude ? [parseFloat(latitude), parseFloat(longitude)] : null;
-                }).filter(Boolean);
-
-                if (coordinates.length > 0) {
-                    L.polyline(coordinates, { color: 'blue', weight: 5 }).addTo(map)
-                        .bindPopup("Route Path"); // Modify as needed
-                }
-            })
-            .catch(error => console.error('Error fetching the CSV:', error));
     </script>
 
 

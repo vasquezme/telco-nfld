@@ -65,7 +65,7 @@
             attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
         }).addTo(map);
 
-        fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/nfld-admin-areas.geojson') // Replace with actual file URL
+        fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/nfld-area.json.geojson') // Replace with actual file URL
             .then(response => response.json()) // Parse the JSON file
             .then(data => {
                 L.geoJSON(data, {

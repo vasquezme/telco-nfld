@@ -277,7 +277,41 @@
                         }
                     }).addTo(map);
                 })
-                .catch(error => console.error('Error fetching GeoJSON:', error));        
+                .catch(error => console.error('Error fetching GeoJSON:', error));
+
+            fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/service-area.geojson') // Replace with actual file URL
+                .then(response => response.json()) // Parse the JSON file
+                .then(data => {
+                    L.geoJSON(data, {
+                        style: function (feature) {
+                            return {
+                                color: "green", 
+                                weight: 2, 
+                                fillColor: "lightgreen", 
+                                fillOpacity: 0.4 
+                            }; // Updated styling
+                        },
+                        onEachFeature: function (feature, layer) {
+                            const properties = feature.properties || {}; // Ensure properties exist
+                            
+                            // Extract relevant attributes from GeoJSON
+                            const fid = properties.FID || "Unknown FID";
+                            const id = properties.ID || "No ID";
+                            const x = properties.X || "No X";
+                            const y = properties.Y || "No Y";
+            
+                            // Bind popup with relevant attributes
+                            layer.bindPopup(`
+                                <strong>FID:</strong> ${fid}<br>
+                                <strong>ID:</strong> ${id}<br>
+                                <strong>X:</strong> ${x}<br>
+                                <strong>Y:</strong> ${y}
+                            `);
+                        }
+                    }).addTo(map);
+                })
+                .catch(error => console.error('Error fetching GeoJSON:', error));       
+
         
       fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/towers.geojson') // Replace with actual file URL or local path
         .then(response => response.json()) // Parse the GeoJSON file

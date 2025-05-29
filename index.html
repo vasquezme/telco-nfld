@@ -257,7 +257,16 @@
                 const towerId = feature.properties.id || "Unknown Tower"; // Extract 'id'
     
                 if (latitude && longitude) {
-                    L.marker([latitude, longitude]) // Add marker to Leaflet map
+                        const customIcon = L.icon({
+                            iconUrl: 'https://raw.githubusercontent.com/vasquezme/telco-nfld/main/cell-tower-pin.svg',  // Replace with actual icon URL
+                            iconSize: [32, 32],  // Adjust the size (width, height)
+                            iconAnchor: [16, 32],  // Adjust where the marker clicks (center-bottom)
+                            popupAnchor: [0, -32]  // Adjust popup placement
+                        });
+                        
+                        L.marker([latitude, longitude], { icon: customIcon })
+                            .addTo(map)
+                            .bindPopup(`Tower ID: ${towerId}`);
                         .addTo(map)
                         .bindPopup(`Tower ID: ${towerId}`);
                 }

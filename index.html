@@ -76,12 +76,13 @@
         fetch("https://raw.githubusercontent.com/vasquezme/telco-nfld/main/towers.geojson")
             .then(response => response.json())
             .then(data => {
-                data.forEach(location => {
-                    var marker = L.marker([location.lat, location.lng]);
+                data.feature.forEach(feature => {
+                    var coords = feature.geometry.coordinates;
+                    var marker = L.marker([corrds[1], coords[0]]);
                     markers.addLayer(marker);
                 });
 
-            map.addLayer(markers);
+                map.addLayer(markers);
             })
             .catch(error => console.error("Error loading locations:", error));
         

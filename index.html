@@ -9,8 +9,13 @@
     <!-- Load Leaflet code library: see https://leafletjs.com/download.html -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
         integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14=" crossorigin="" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaglet.markercluster/dist/MarkerCluster.Default.css" />
+    
     <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
         integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 
     <!-- Position the map and title with Cascading Style Sheet (CSS) -->
     <style>
@@ -64,6 +69,22 @@
             'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { // https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}
             attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
         }).addTo(map);
+
+        //Initialize a marker cluster group
+        var markers = L.markerClusterGroup();
+
+        fetch("https://raw.githubusercontent.com/vasquezme/telco-nfld/main/towers.geojson")
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(location => {
+                    var marker = L.marker([location.lat, location.lng]);
+                    markers.addLayer(marker);
+                });
+
+            map.addLayer(markers);
+            })
+            .catch(error => console.error("Error loading locations:", error));
+        
 
         fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/st-anthony-port.geojson') // Replace with actual file URL
             .then(response => response.json()) // Parse the JSON file

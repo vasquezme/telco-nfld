@@ -2,5 +2,4 @@ dash
 geopandas 
 folium
 matplotlib
-os
 gunicorn

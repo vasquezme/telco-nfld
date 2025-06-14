@@ -1,5 +1,5 @@
 dash
 geopandas 
 folium
-imatplotlib.pyplot as plt
+matplotlib
 os

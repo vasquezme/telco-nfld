@@ -299,27 +299,20 @@
                         },
                         onEachFeature: function (feature, layer) {
                             const properties = feature.properties || {}; // Ensure properties exist
-                            
+                            let popupContent = ``;
                             // Extract relevant attributes from GeoJSON
-                            const fid = properties.FID || "Unknown FID";
-                            const id = properties.ID || "No ID";
-                            const x = properties.X || "No X";
-                            const y = properties.Y || "No Y";
-            
-                            // Bind popup with relevant attributes
-                            layer.bindPopup(`
-                                <strong>FID:</strong> ${fid}<br>
-                                <strong>ID:</strong> ${id}<br>
-                                <strong>X:</strong> ${x}<br>
-                                <strong>Y:</strong> ${y}
-                            `);
+                            if (properties.FID) popupContent += `<strong>FID:</strong> ${properties.FID}<br>`;
+                            if (properties.ID) popupContent += `<strong>FID:</strong> ${properties.ID}<br>`;
+                            if (properties.X) popupContent += `<strong>FID:</strong> ${properties.X}<br>`;
+                            if (properties.Y) popupContent += `<strong>FID:</strong> ${properties.Y}<br>`;
+                            layer.bindPopup(popupContent || "No detailed information available");
                         }
-                    }).addTo(map);
+                    }].addTo(map)
                 })
                 .catch(error => console.error('Error fetching GeoJSON:', error));       
 
 
-        var towerMarkers = L.markerClusterGroup();
+      var towerMarkers = L.markerClusterGroup();
         
       fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/towers.geojson') // Replace with actual file URL or local path
         .then(response => response.json()) // Parse the GeoJSON file

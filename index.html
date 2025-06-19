@@ -319,7 +319,7 @@
                 .catch(error => console.error('Error fetching GeoJSON:', error));       
 
 
-    var towerMarkers = L.markerClusterGroup();
+        var towerMarkers = L.markerClusterGroup();
         
       fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/towers.geojson') // Replace with actual file URL or local path
         .then(response => response.json()) // Parse the GeoJSON file

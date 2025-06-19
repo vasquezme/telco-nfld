@@ -6,23 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
 
-    <!-- Load Leaflet code library: see https://leafletjs.com/download.html -->
+    <!-- Load Leaflet code library -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
         integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
         integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg=" crossorigin=""></script>
 
+    <!-- Load Leaflet MarkerCluster plugin -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
-
-    
     <!-- Position the map and title with Cascading Style Sheet (CSS) -->
     <style>
         body {
             margin: 0;
             padding: 0;
+            font-family: "Inter", sans-serif; /* Using Inter font */
+            overflow: hidden; /* Prevent body scroll */
         }
 
         #map {
@@ -31,322 +32,186 @@
             bottom: 0;
             right: 0;
             left: 0;
+            width: 100vw; /* Ensure map fills viewport width */
+            height: 100vh; /* Ensure map fills viewport height */
+            border-radius: 8px; /* Rounded corners for the map */
+            overflow: hidden; /* Hide any overflow from rounded corners */
         }
 
         #map-title {
-            position: relative;
-            margin-top: 10px;
-            margin-left: 50px;
-            float: left;
+            position: absolute; /* Changed to absolute to float over the map */
+            top: 20px; /* Adjusted position */
+            left: 50%; /* Center horizontally */
+            transform: translateX(-50%); /* Adjust for perfect centering */
             background: white;
             border: 2px solid rgba(0, 0, 0, 0.2);
-            padding: 6px 8px;
-            font-family: Helvetica;
+            padding: 10px 15px; /* Increased padding */
             font-weight: bold;
-            font-size: 24px;
-            z-index: 800;
+            font-size: 28px; /* Larger font size */
+            z-index: 800; /* Ensure it's above the map */
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            white-space: nowrap; /* Prevent title from wrapping */
         }
     </style>
 </head>
 
 <body>
 
-    <!-- Display the map and title with HTML division tags  -->
+    <!-- Display the map and title with HTML division tags -->
     <div id="map-title">East Coast Telco. Samples</div>
     <div id="map"></div>
 
     <!-- Create the interactive map content with JavaScript (.js) -->
     <script>
-
         /* Set up the initial map center and zoom level */
         var map = L.map('map', {
-            center: [51.72, -57.21], // EDIT coordinates to re-center map 51.725871649571445, -57.218914742409
+            center: [51.72, -57.21], // EDIT coordinates to re-center map
             zoom: 5,  // EDIT from 1 (zoomed out) to 18 (zoomed in)
             scrollWheelZoom: true
         });
 
-        /* display basemap tiles -- see others at https://leaflet-extras.github.io/leaflet-providers/preview/ */
+        /* Display basemap tiles -- see others at https://leaflet-extras.github.io/leaflet-providers/preview/ */
         L.tileLayer(
-            'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { // https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}
+            'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
             attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
         }).addTo(map);
 
-        fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/st-anthony-port.geojson') // Replace with actual file URL
-            .then(response => response.json()) // Parse the JSON file
-            .then(data => {
-                L.geoJSON(data, {
-                    style: function (feature) {
-                        return { color: "blue", weight: 2 }; // Set polygon color & style
-                    },
-                    onEachFeature: function (feature, layer) {
-                        // Extract properties
-                        const regionName = feature.properties.REGNAME || "Unknown Region";
-                        const geoId = feature.properties.GEOID || "No GEOID Available";
-                        const id = feature.properties.ID || "No ID";
-        
-                        // Bind popup with details
-                        layer.bindPopup(`<strong>Region:</strong> ${regionName}<br><strong>GEOID:</strong> ${geoId}<br><strong>ID:</strong> ${id}`);
-                    }
-                }).addTo(map);
-            })
-            .catch(error => console.error('Error fetching GeoJSON:', error));
-
-        fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/labrador.geojson') // Replace with actual file URL
-            .then(response => response.json()) // Parse the JSON file
-            .then(data => {
-                L.geoJSON(data, {
-                    style: function (feature) {
-                        return { color: "blue", weight: 2 }; // Set polygon color & style
-                    },
-                    onEachFeature: function (feature, layer) {
-                        // Extract properties
-                        const regionName = feature.properties.REGNAME || "Unknown Region";
-                        const geoId = feature.properties.GEOID || "No GEOID Available";
-                        const id = feature.properties.ID || "No ID";
-        
-                        // Bind popup with details
-                        layer.bindPopup(`<strong>Region:</strong> ${regionName}<br><strong>GEOID:</strong> ${geoId}<br><strong>ID:</strong> ${id}`);
-                    }
-                }).addTo(map);
-            })
-            .catch(error => console.error('Error fetching GeoJSON:', error));
-
-            fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/stephenville.geojson') // Replace with actual file URL
-            .then(response => response.json()) // Parse the JSON file
-            .then(data => {
-                L.geoJSON(data, {
-                    style: function (feature) {
-                        return { color: "blue", weight: 2 }; // Set polygon color & style
-                    },
-                    onEachFeature: function (feature, layer) {
-                        // Extract properties
-                        const regionName = feature.properties.REGNAME || "Unknown Region";
-                        const geoId = feature.properties.GEOID || "No GEOID Available";
-                        const id = feature.properties.ID || "No ID";
-        
-                        // Bind popup with details
-                        layer.bindPopup(`<strong>Region:</strong> ${regionName}<br><strong>GEOID:</strong> ${geoId}<br><strong>ID:</strong> ${id}`);
-                    }
-                }).addTo(map);
-            })
-            .catch(error => console.error('Error fetching GeoJSON:', error));
-
-
-        fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/corner-brook.geojson') // Replace with actual file URL
-            .then(response => response.json()) // Parse the JSON file
-            .then(data => {
-                L.geoJSON(data, {
-                    style: function (feature) {
-                        return { color: "blue", weight: 2 }; // Set polygon color & style
-                    },
-                    onEachFeature: function (feature, layer) {
-                        // Extract properties
-                        const regionName = feature.properties.REGNAME || "Unknown Region";
-                        const geoId = feature.properties.GEOID || "No GEOID Available";
-                        const id = feature.properties.ID || "No ID";
-        
-                        // Bind popup with details
-                        layer.bindPopup(`<strong>Region:</strong> ${regionName}<br><strong>GEOID:</strong> ${geoId}<br><strong>ID:</strong> ${id}`);
-                    }
-                }).addTo(map);
-            })
-            .catch(error => console.error('Error fetching GeoJSON:', error));
-
-            fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/grand-falls.geojson') // Replace with actual file URL
-            .then(response => response.json()) // Parse the JSON file
-            .then(data => {
-                L.geoJSON(data, {
-                    style: function (feature) {
-                        return { color: "blue", weight: 2 }; // Set polygon color & style
-                    },
-                    onEachFeature: function (feature, layer) {
-                        // Extract properties
-                        const regionName = feature.properties.REGNAME || "Unknown Region";
-                        const geoId = feature.properties.GEOID || "No GEOID Available";
-                        const id = feature.properties.ID || "No ID";
-        
-                        // Bind popup with details
-                        layer.bindPopup(`<strong>Region:</strong> ${regionName}<br><strong>GEOID:</strong> ${geoId}<br><strong>ID:</strong> ${id}`);
-                    }
-                }).addTo(map);
-            })
-            .catch(error => console.error('Error fetching GeoJSON:', error));
-
-                fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/avalon.geojson') // Replace with actual file URL
-            .then(response => response.json()) // Parse the JSON file
-            .then(data => {
-                L.geoJSON(data, {
-                    style: function (feature) {
-                        return { color: "blue", weight: 2 }; // Set polygon color & style
-                    },
-                    onEachFeature: function (feature, layer) {
-                        // Extract properties
-                        const regionName = feature.properties.REGNAME || "Unknown Region";
-                        const geoId = feature.properties.GEOID || "No GEOID Available";
-                        const id = feature.properties.ID || "No ID";
-        
-                        // Bind popup with details
-                        layer.bindPopup(`<strong>Region:</strong> ${regionName}<br><strong>GEOID:</strong> ${geoId}<br><strong>ID:</strong> ${id}`);
-                    }
-                }).addTo(map);
-            })
-            .catch(error => console.error('Error fetching GeoJSON:', error));
-
-            fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/burin.geojson') // Replace with actual file URL
-            .then(response => response.json()) // Parse the JSON file
-            .then(data => {
-                L.geoJSON(data, {
-                    style: function (feature) {
-                        return { color: "blue", weight: 2 }; // Set polygon color & style
-                    },
-                    onEachFeature: function (feature, layer) {
-                        // Extract properties
-                        const regionName = feature.properties.REGNAME || "Unknown Region";
-                        const geoId = feature.properties.GEOID || "No GEOID Available";
-                        const id = feature.properties.ID || "No ID";
-        
-                        // Bind popup with details
-                        layer.bindPopup(`<strong>Region:</strong> ${regionName}<br><strong>GEOID:</strong> ${geoId}<br><strong>ID:</strong> ${id}`);
-                    }
-                }).addTo(map);
-            })
-            .catch(error => console.error('Error fetching GeoJSON:', error));
-
-            fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/clarenville.geojson') // Replace with actual file URL
-            .then(response => response.json()) // Parse the JSON file
-            .then(data => {
-                L.geoJSON(data, {
-                    style: function (feature) {
-                        return { color: "blue", weight: 2 }; // Set polygon color & style
-                    },
-                    onEachFeature: function (feature, layer) {
-                        // Extract properties
-                        const regionName = feature.properties.REGNAME || "Unknown Region";
-                        const geoId = feature.properties.GEOID || "No GEOID Available";
-                        const id = feature.properties.ID || "No ID";
-        
-                        // Bind popup with details
-                        layer.bindPopup(`<strong>Region:</strong> ${regionName}<br><strong>GEOID:</strong> ${geoId}<br><strong>ID:</strong> ${id}`);
-                    }
-                }).addTo(map);
-            })
-            .catch(error => console.error('Error fetching GeoJSON:', error));
-
-            fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/gander.geojson') // Replace with actual file URL
-            .then(response => response.json()) // Parse the JSON file
-            .then(data => {
-                L.geoJSON(data, {
-                    style: function (feature) {
-                        return { color: "blue", weight: 2 }; // Set polygon color & style
-                    },
-                    onEachFeature: function (feature, layer) {
-                        // Extract properties
-                        const regionName = feature.properties.REGNAME || "Unknown Region";
-                        const geoId = feature.properties.GEOID || "No GEOID Available";
-                        const id = feature.properties.ID || "No ID";
-        
-                        // Bind popup with details
-                        layer.bindPopup(`<strong>Region:</strong> ${regionName}<br><strong>GEOID:</strong> ${geoId}<br><strong>ID:</strong> ${id}`);
-                    }
-                }).addTo(map);
-            })
-            .catch(error => console.error('Error fetching GeoJSON:', error));
-
-            fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/buffers.geojson') // Replace with actual file URL
-                .then(response => response.json()) // Parse the JSON file
+        // --- Function to load and add GeoJSON polygons ---
+        // This function fetches GeoJSON data from a URL and adds it to the map as polygons.
+        // It also binds a popup to each polygon with properties from the GeoJSON.
+        function loadPolygonGeoJSON(url) {
+            fetch(url)
+                .then(response => response.json())
                 .then(data => {
                     L.geoJSON(data, {
                         style: function (feature) {
-                            return {
-                                color: "blue", 
-                                weight: 2, 
-                                fillColor: "lightblue", 
-                                fillOpacity: 0.4 
-                            }; // Updated styling
+                            // Default style for polygons
+                            return { color: "blue", weight: 2, fillColor: "lightblue", fillOpacity: 0.4 };
                         },
                         onEachFeature: function (feature, layer) {
                             const properties = feature.properties || {}; // Ensure properties exist
+
+                            // Build popup content from common properties
+                            let popupContent = ``;
+                            if (properties.REGNAME) popupContent += `<strong>Region:</strong> ${properties.REGNAME}<br>`;
+                            if (properties.GEOID) popupContent += `<strong>GEOID:</strong> ${properties.GEOID}<br>`;
+                            if (properties.ID) popupContent += `<strong>ID:</strong> ${properties.ID}<br>`;
+                            if (properties.FID) popupContent += `<strong>FID:</strong> ${properties.FID}<br>`;
+                            if (properties.X) popupContent += `<strong>X:</strong> ${properties.X}<br>`;
+                            if (properties.Y) popupContent += `<strong>Y:</strong> ${properties.Y}<br>`;
                             
-                            // Extract relevant attributes from GeoJSON
-                            const fid = properties.FID || "Unknown FID";
-                            const id = properties.ID || "No ID";
-                            const x = properties.X || "No X";
-                            const y = properties.Y || "No Y";
-            
-                            // Bind popup with relevant attributes
-                            layer.bindPopup(`
-                                <strong>FID:</strong> ${fid}<br>
-                                <strong>ID:</strong> ${id}<br>
-                                <strong>X:</strong> ${x}<br>
-                                <strong>Y:</strong> ${y}
-                            `);
+                            layer.bindPopup(popupContent || "No detailed information available");
                         }
                     }).addTo(map);
                 })
-                .catch(error => console.error('Error fetching GeoJSON:', error));
+                .catch(error => console.error(`Error fetching GeoJSON from ${url}:`, error));
+        }
 
-            fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/service-area.geojson') // Replace with actual file URL
-                .then(response => response.json()) // Parse the JSON file
-                .then(data => {
-                    L.geoJSON(data, {
-                        style: function (feature) {
-                            return {
-                                color: "green", 
-                                weight: 3, 
-                                fillColor: "lightgreen", 
-                                fillOpacity: 0.4 
-                            }; // Updated styling
-                        },
-                        onEachFeature: function (feature, layer) {
-                            const properties = feature.properties || {}; // Ensure properties exist
-                            let popupContent = ``;
-                            // Extract relevant attributes from GeoJSON
-                            if (properties.FID) popupContent += `<strong>FID:</strong> ${properties.FID}<br>`;
-                            if (properties.ID) popupContent += `<strong>FID:</strong> ${properties.ID}<br>`;
-                            if (properties.X) popupContent += `<strong>FID:</strong> ${properties.X}<br>`;
-                            if (properties.Y) popupContent += `<strong>FID:</strong> ${properties.Y}<br>`;
-                            layer.bindPopup(popupContent || "No detailed information available");
-                        }
-                    }].addTo(map)
-                })
-                .catch(error => console.error('Error fetching GeoJSON:', error));       
-
-
-      var towerMarkers = L.markerClusterGroup();
+        // --- Load various GeoJSON polygon files ---
+        loadPolygonGeoJSON('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/st-anthony-port.geojson');
+        loadPolygonGeoJSON('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/labrador.geojson');
+        loadPolygonGeoJSON('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/stephenville.geojson');
+        loadPolygonGeoJSON('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/corner-brook.geojson');
+        loadPolygonGeoJSON('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/grand-falls.geojson');
+        loadPolygonGeoJSON('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/avalon.geojson');
+        loadPolygonGeoJSON('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/burin.geojson');
+        loadPolygonGeoJSON('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/clarenville.geojson');
+        loadPolygonGeoJSON('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/gander.geojson');
         
-      fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/towers.geojson') // Replace with actual file URL or local path
-        .then(response => response.json()) // Parse the GeoJSON file
-        .then(data => {
-            data.features.forEach(feature => {
-                if (feature.geometry && feature.geometry.typw === 'Point' && feature.properties) {
-                // Extract coordinates from GeoJSON structure
-                    const longitude = feature.properties.x; // Assuming 'x' is longitude
-                    const latitude = feature.properties.y; // Assuming 'y' is latitude
-                    const towerId = feature.properties.id || "Unknown Tower"; // Extract 'id'
-        
-                    if (latitude && longitude) {
-                            const customIcon = L.icon({
-                                iconUrl: 'https://raw.githubusercontent.com/vasquezme/telco-nfld/main/cell-tower-pin.svg',  // Replace with actual icon URL
-                                iconSize: [64, 64],  // Adjust the size (width, height)
-                                iconAnchor: [16, 32],  // Adjust where the marker clicks (center-bottom)
-                                popupAnchor: [0, -32]  // Adjust popup placement
-                            });
-    
-                            const marker = L.marker ([latitude, longitude], { icon: customerIcon });
-    
-                            marker.bindPopup(`<strong>Tower ID:</strong> ${towerid}`);
-                            
-                            towerMarkers.addLayer(marker);
+        // Specific styling for buffers.geojson
+        fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/buffers.geojson')
+            .then(response => response.json())
+            .then(data => {
+                L.geoJSON(data, {
+                    style: function (feature) {
+                        return {
+                            color: "darkblue",
+                            weight: 2,
+                            fillColor: "lightblue",
+                            fillOpacity: 0.4
+                        };
+                    },
+                    onEachFeature: function (feature, layer) {
+                        const properties = feature.properties || {};
+                        let popupContent = ``;
+                        if (properties.FID) popupContent += `<strong>FID:</strong> ${properties.FID}<br>`;
+                        if (properties.ID) popupContent += `<strong>ID:</strong> ${properties.ID}<br>`;
+                        if (properties.X) popupContent += `<strong>X:</strong> ${properties.X}<br>`;
+                        if (properties.Y) popupContent += `<strong>Y:</strong> ${properties.Y}<br>`;
+                        layer.bindPopup(popupContent || "No detailed information available");
                     }
-                }
-            });
+                }).addTo(map);
+            })
+            .catch(error => console.error('Error fetching buffers.geojson:', error));
 
-        map.addLayer(towerMarkers);
-        })
-        .catch(error => console.error('Error fetching the GeoJSON:', error));  
+        // Specific styling for service-area.geojson
+        fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/service-area.geojson')
+            .then(response => response.json())
+            .then(data => {
+                L.geoJSON(data, {
+                    style: function (feature) {
+                        return {
+                            color: "darkgreen",
+                            weight: 3,
+                            fillColor: "lightgreen",
+                            fillOpacity: 0.4
+                        };
+                    },
+                    onEachFeature: function (feature, layer) {
+                        const properties = feature.properties || {};
+                        let popupContent = ``;
+                        if (properties.FID) popupContent += `<strong>FID:</strong> ${properties.FID}<br>`;
+                        if (properties.ID) popupContent += `<strong>ID:</strong> ${properties.ID}<br>`;
+                        if (properties.X) popupContent += `<strong>X:</strong> ${properties.X}<br>`;
+                        if (properties.Y) popupContent += `<strong>Y:</strong> ${properties.Y}<br>`;
+                        layer.bindPopup(popupContent || "No detailed information available");
+                    }
+                }).addTo(map);
+            })
+            .catch(error => console.error('Error fetching service-area.geojson:', error));
 
-        
-    </script>
+        // --- Load and cluster tower markers ---
+        // Initialize a new Marker Cluster Group for the towers.
+        var towerMarkers = L.markerClusterGroup();
+
+        fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/towers.geojson') // URL to the GeoJSON file containing tower data
+            .then(response => response.json()) // Parse the GeoJSON file
+            .then(data => {
+                // Iterate over each feature (tower) in the GeoJSON data
+                data.features.forEach(feature => {
+                    // Ensure the feature is a Point geometry and has properties
+                    if (feature.geometry && feature.geometry.type === 'Point' && feature.properties) {
+                        // Extract coordinates (longitude, latitude) from GeoJSON structure
+                        const longitude = feature.properties.x; // Assuming 'x' is longitude in properties
+                        const latitude = feature.properties.y;  // Assuming 'y' is latitude in properties
+                        const towerId = feature.properties.id || "Unknown Tower"; // Extract 'id' property, default if not found
+
+                        // Only proceed if valid latitude and longitude are found
+                        if (latitude && longitude) {
+                            // Define a custom icon for the tower markers
+                            const customIcon = L.icon({
+                                iconUrl: 'https://raw.githubusercontent.com/vasquezme/telco-nfld/main/cell-tower-pin.svg', // URL to the custom SVG icon
+                                iconSize: [48, 48], // Size of the icon [width, height] in pixels
+                                iconAnchor: [24, 48], // Point of the icon which will correspond to marker's location [x, y]
+                                popupAnchor: [0, -48] // Point from which popups will "open", relative to the iconAnchor
+                            });
+
+                            // Create a marker with the extracted coordinates and custom icon
+                            const marker = L.marker([latitude, longitude], { icon: customIcon });
+
+                            // Bind a popup to the marker, displaying the Tower ID
+                            marker.bindPopup(`<strong>Tower ID:</strong> ${towerId}`);
+
+                            // Add the created marker to the `towerMarkers` cluster group
+                            towerMarkers.addLayer(marker);
+                        }
+                    }
+                });
+                // After all markers are added to the cluster group, add the group to the map
+                map.addLayer(towerMarkers);
+            })
+            .catch(error => console.error('Error fetching the towers.geojson:', error));
 
     </script>
 </body>

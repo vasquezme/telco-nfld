@@ -318,6 +318,8 @@
                 })
                 .catch(error => console.error('Error fetching GeoJSON:', error));       
 
+
+    var towerMarkers = L.markerClusterGroup();
         
       fetch('https://raw.githubusercontent.com/vasquezme/telco-nfld/main/towers.geojson') // Replace with actual file URL or local path
         .then(response => response.json()) // Parse the GeoJSON file
@@ -344,17 +346,7 @@
         })
         .catch(error => console.error('Error fetching the GeoJSON:', error));  
 
-    var markers = L.markerClusterGroup();
 
-    var marker1 = L.marker([55.6385, -62.4818]).bindPopup("marker 1");
-    var marker2 = L.marker([52.9530, -58.0594]).bindPopup("marker 2");
-    var marker3 = L.marker([49.5989, -56.9357]).bindPopup("marker 3");
-    var marker4 = L.marker([48.0842, -54.9783]).bindPopup("marker 4");
-    
-    markers.addLayer(marker1);
-    markers.addLayer(marker2);
-    markers.addLayer(marker3);
-    markers.addLayer(marker4);
         
         
     </script>
